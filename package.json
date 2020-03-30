@@ -1,0 +1,40 @@
+{
+  "name": "covid-stat-bot",
+  "version": "1.0.0",
+  "description": "a simple telegram bot to provide data for users scrapped from https://www.worldometers.info/coronavirus/ ",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server",
+    "dev": "nodemon server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LeulAria/covid-stat-bot.git"
+  },
+  "keywords": [
+    "covid-bot",
+    "COVID-19",
+    "corona",
+    "virus",
+    "COVID-19",
+    "stat",
+    "corona-virus",
+    "stat",
+    "cheerio",
+    "scrappy"
+  ],
+  "author": "leul",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/LeulAria/covid-stat-bot/issues"
+  },
+  "homepage": "https://github.com/LeulAria/covid-stat-bot#readme",
+  "dependencies": {
+    "axios": "^0.19.2",
+    "cheerio": "^1.0.0-rc.3",
+    "node-telegram-bot-api": "^0.40.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.2"
+  }
+}

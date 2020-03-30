@@ -1,3 +1,5 @@
+const express = require('express');
+const app = express();
 const axios = require('axios');
 const cheerio = require('cheerio');
 
@@ -23,6 +25,7 @@ const opts = {
   parse_mode: 'Markdown'
 };
 
+
 bot.onText(/\/echo (.+)/, (msg, match) => {
   const chatId = msg.chat.id;
   const resp = match[1];
@@ -30,55 +33,62 @@ bot.onText(/\/echo (.+)/, (msg, match) => {
   bot.sendMessage(chatId, resp);
 });
 
-// all bot messaging goes here...
-bot.on('message', (msg) => {
-  const chatId = msg.chat.id;
-
-  if(msg.text === '/whare_am_i') {
-    bot.sendMessage(chatId, '*You are currently located on:*', opts);
-    bot.sendMessage(chatId, 'Loading location Please wailt...');
-    getLocation().then(res => {
-      bot.sendMessage(chatId, `.\n.\nCountry: ${res.data.country}\nCity: ${res.data.city}\nRegion: ${res.data.region} (${res.data.regionName})\nTimezone: ${res.data.timezone}\n.\n.
-      `);
-    });
-  } else if(msg.text === '/get_my_country_data') {
-    bot.sendMessage(chatId, 'Loading Data Please wait...');
-    getScrappableData().then(res => {
-      const countrysData = scrapAllCountrysData(res.data);
-      getLocation(chatId).then((res) => {        
-        const countryData = countrysData.filter((country) => res.data.country === country.name);
-        console.log(countryData)
-        bot.sendMessage(chatId, `.\n.\nCountry: ${countryData[0].name}\nNew Cases: ${countryData[0].newCase}\nNew Death: ${countryData[0].newDeath}\nTotal Cases: ${countryData[0].totalCase}\nTotal Death: ${countryData[0].totalDeath}\nTotal Recovered: ${countryData[0].totalRecovered}\nTotal Active Cases: ${countryData[0].activeCases}\nOn Serious Condition: ${countryData[0].seriousCritical}\nTotal Case Per Population: ${countryData[0].totalCasePerPop}\nTotal Death Per Population: ${countryData[0].totalDeathPerPop}\nFirst Case Found on: ${countryData[0].reported1stDate.substring(2)}\n.\n.`)
-      })
-    })
-  }
-  else if(msg.text === '/get_global_total_data') {
-    bot.sendMessage(chatId, 'Loading Total Global Covid Datas:');
-    bot.sendMessage(chatId, 'Loading Data Please wait...');
-    getScrappableData().then(res => {
-      const globalData = scrapGlobalData(res.data);
-      bot.sendMessage(chatId, `.\n.\nData: GLOBAL DATA\n\nNew Cases: ${globalData.totalNewCases}\n\nNew Death: ${globalData.totalNewDeath}\n\nTotal Cases: ${globalData.totalCases}\n\nTotal Death: ${globalData.totalDeath}\n\nTotal Recovered: ${globalData.totalRecovered}\n\nTotal Active Cases: ${globalData.totalActiveCase}\n\nOn Serious Condition: ${globalData.totalSeriousCritical}\n\nTotal Case Per Population: ${globalData.totalCasePerPop}\n\nTotal Death Per Population: ${globalData.totalDeathPerPop}\n.\n.`)
-    });
-  } else if(msg.text === '/get_all_countrys_global_data') {
-    bot.sendMessage(chatId, 'Loading All Countrys Statstics:');
-    bot.sendMessage(chatId, 'Loading Data Please wait...');
-    getScrappableData().then(res => {
-      const countrysData = scrapAllCountrysData(res.data);
-      let allCountrysDataTemplate = ``;
-      countrysData.forEach(country => {
-        bot.sendMessage(chatId, `\n------------------------\nCountry: ${country.name}\nNew Cases: ${country.newCase}\nNew Death: ${country.newDeath}\nTotal Cases: ${country.totalCase}\nTotal Death: ${country.totalDeath}\nTotal Recovered: ${country.totalRecovered}\nTotal Active Cases: ${country.activeCases}\nOn Serious Condition: ${country.seriousCritical}\nTotal Case Per Population: ${country.totalCasePerPop}\nTotal Death Per Population: ${country.totalDeathPerPop}\nFirst Case Found on: ${country.reported1stDate.substring(1)}\n\n------------------------\n`);
+express.get('/', (req, res) => {
+  
+  //all bot messaging goes here...
+  bot.on('message', (msg) => {
+    const chatId = msg.chat.id;
+    
+    if(msg.text === '/whare_am_i') {
+      bot.sendMessage(chatId, '*You are currently located on:*', opts);
+      bot.sendMessage(chatId, 'Loading location Please wailt...');
+      getLocation().then(res => {
+        bot.sendMessage(chatId, `.\n.\nCountry: ${res.data.country}\nCity: ${res.data.city}\nRegion: ${res.data.region} (${res.data.regionName})\nTimezone: ${res.data.timezone}\n.\n.
+        `);
       });
-    });
-  } else {
-    bot.sendMessage(chatId, `
-/whare_am_i - get you'r current location
-/get_my_country_data - get you'r current location data
-/get_10_countrys_high_covid_case - get top 10 countrys with high covid cases
-/get_global_total_data - get all total datas considering covid-19
-/get_all_countrys_global_data - get all country's data`)
-  }
-});
+    } else if(msg.text === '/get_my_country_data') {
+      bot.sendMessage(chatId, 'Loading Data Please wait...');
+      getScrappableData().then(res => {
+        const countrysData = scrapAllCountrysData(res.data);
+        getLocation(chatId).then((res) => {        
+          const countryData = countrysData.filter((country) => res.data.country === country.name);
+          console.log(countryData)
+          bot.sendMessage(chatId, `.\n.\nCountry: ${countryData[0].name}\nNew Cases: ${countryData[0].newCase}\nNew Death: ${countryData[0].newDeath}\nTotal Cases: ${countryData[0].totalCase}\nTotal Death: ${countryData[0].totalDeath}\nTotal Recovered: ${countryData[0].totalRecovered}\nTotal Active Cases: ${countryData[0].activeCases}\nOn Serious Condition: ${countryData[0].seriousCritical}\nTotal Case Per Population: ${countryData[0].totalCasePerPop}\nTotal Death Per Population: ${countryData[0].totalDeathPerPop}\nFirst Case Found on: ${countryData[0].reported1stDate.substring(2)}\n.\n.`)
+        })
+      })
+    }
+    else if(msg.text === '/get_global_total_data') {
+      bot.sendMessage(chatId, 'Loading Total Global Covid Datas:');
+      bot.sendMessage(chatId, 'Loading Data Please wait...');
+      getScrappableData().then(res => {
+        const globalData = scrapGlobalData(res.data);
+        bot.sendMessage(chatId, `.\n.\nData: GLOBAL DATA\n\nNew Cases: ${globalData.totalNewCases}\n\nNew Death: ${globalData.totalNewDeath}\n\nTotal Cases: ${globalData.totalCases}\n\nTotal Death: ${globalData.totalDeath}\n\nTotal Recovered: ${globalData.totalRecovered}\n\nTotal Active Cases: ${globalData.totalActiveCase}\n\nOn Serious Condition: ${globalData.totalSeriousCritical}\n\nTotal Case Per Population: ${globalData.totalCasePerPop}\n\nTotal Death Per Population: ${globalData.totalDeathPerPop}\n.\n.`)
+      });
+    } else if(msg.text === '/get_all_countrys_global_data') {
+      bot.sendMessage(chatId, 'Loading All Countrys Statstics:');
+      bot.sendMessage(chatId, 'Loading Data Please wait...');
+      getScrappableData().then(res => {
+        const countrysData = scrapAllCountrysData(res.data);
+        let allCountrysDataTemplate = ``;
+        countrysData.forEach(country => {
+          bot.sendMessage(chatId, `\n------------------------\nCountry: ${country.name}\nNew Cases: ${country.newCase}\nNew Death: ${country.newDeath}\nTotal Cases: ${country.totalCase}\nTotal Death: ${country.totalDeath}\nTotal Recovered: ${country.totalRecovered}\nTotal Active Cases: ${country.activeCases}\nOn Serious Condition: ${country.seriousCritical}\nTotal Case Per Population: ${country.totalCasePerPop}\nTotal Death Per Population: ${country.totalDeathPerPop}\nFirst Case Found on: ${country.reported1stDate.substring(1)}\n\n------------------------\n`);
+        });
+      });
+    } else {
+      bot.sendMessage(chatId, `
+  /whare_am_i - get you'r current location
+  /get_my_country_data - get you'r current location data
+  /get_10_countrys_high_covid_case - get top 10 countrys with high covid cases
+  /get_global_total_data - get all total datas considering covid-19
+  /get_all_countrys_global_data - get all country's data`)
+    }
+  })  
 
+})
+
+
+
+//
 // getting location using http://ip-api.com/json/ api
 // @param chatId
 // @return location json object
@@ -161,3 +171,8 @@ const sortUtil = (a, b) => {
     return 0;
   }
 }
+
+
+// server
+const PORT = 3000 || process.env.PORT;
+app.listen(PORT,() => console.log('server started on ', PORT));
